@@ -215,8 +215,8 @@ export const MOCK_STRATEGIC_ANALYSIS: StrategicAnalysis = {
       'Revisar proceso de seguimiento de plazos vencidos',
     ],
     metrics: {
-      overdue_percentage: 8. 3,
-      critical_percentage: 20. 8,
+      overdue_percentage: 8.3,
+      critical_percentage: 20.8,
       average_response_time: 2.5,
       compliance_rate: 91.7,
     },
