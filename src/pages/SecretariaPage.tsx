@@ -6,21 +6,20 @@ import type { DeadlineExtractionResult } from '../types/agents';
 
 export default function SecretariaPage() {
   const [deadlines, setDeadlines] = useState<DeadlineExtractionResult>(MOCK_DEADLINES);
-  const [inputText, setInputText] = useState('');
   const [isExtracting, setIsExtracting] = useState(false);
 
   const stats = MOCK_DEADLINE_STATS;
 
-  const handleExtract = async () => {
-    if (!inputText.trim()) return;
-    
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target. files?.[0];
+    if (!file) return;
+
     setIsExtracting(true);
     // Simulate API call - replace with real API call later
     setTimeout(() => {
       setIsExtracting(false);
-      // For now, just show mock data
       setDeadlines(MOCK_DEADLINES);
-    }, 1500);
+    }, 2000);
   };
 
   return (
@@ -65,25 +64,34 @@ export default function SecretariaPage() {
           </div>
         </div>
 
-        {/* Input Section */}
+        {/* Upload Section */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
             <AlertCircle className="w-5 h-5 text-indigo-600" />
-            Extraer Plazos de Texto
+            Subir Documento para Extraer Plazos
           </h2>
-          <textarea
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Pegue aquí el texto de documentos, correos o notas para extraer plazos automáticamente..."
-            className="w-full h-32 p-4 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none resize-none"
-          />
-          <button
-            onClick={handleExtract}
-            disabled={isExtracting || !inputText.trim()}
-            className="mt-4 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-          >
-            {isExtracting ? 'Extrayendo...' : 'Extraer Plazos'}
-          </button>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-indigo-500 transition-colors">
+            <input
+              type="file"
+              id="deadline-file-upload"
+              onChange={handleFileUpload}
+              accept=".pdf,. doc,. docx,.txt,.eml"
+              className="hidden"
+              disabled={isExtracting}
+            />
+            <label
+              htmlFor="deadline-file-upload"
+              className="cursor-pointer flex flex-col items-center gap-2"
+            >
+              <Calendar className="w-12 h-12 text-gray-400" />
+              <span className="text-lg font-medium text-gray-700">
+                {isExtracting ? 'Extrayendo plazos...' : 'Click para subir documento'}
+              </span>
+              <span className="text-sm text-gray-500">
+                PDF, DOC, DOCX, TXT, EML
+              </span>
+            </label>
+          </div>
         </div>
 
         {/* Deadlines List */}
@@ -93,9 +101,9 @@ export default function SecretariaPage() {
             Plazos Detectados ({deadlines.count})
           </h2>
           
-          {deadlines.deadlines.length === 0 ?  (
+          {deadlines.deadlines.length === 0 ? (
             <p className="text-gray-500 text-center py-8">
-              No hay plazos extraídos.  Ingrese texto para comenzar.
+              No hay plazos extraídos.  Suba un documento para comenzar.
             </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
