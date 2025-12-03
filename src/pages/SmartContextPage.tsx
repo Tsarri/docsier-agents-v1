@@ -1,28 +1,160 @@
-import { Brain } from "lucide-react";
+import { useState } from 'react';
+import { Brain, TrendingUp, AlertTriangle, CheckCircle, Lightbulb } from 'lucide-react';
+import { RiskBadge } from '../components/agents';
+import { MOCK_STRATEGIC_ANALYSIS } from '../services/api';
+import type { StrategicAnalysis, AnalysisType } from '../types/agents';
 
 export default function SmartContextPage() {
-  return (
-    <div className="p-6 md:p-8">
-      <header className="mb-8">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-lg bg-primary/10 text-primary">
-            <Brain className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Smart Context</h1>
-            <p className="text-muted-foreground">Tareas y deadlines inteligentes</p>
-          </div>
-        </div>
-      </header>
+  const [analysis, setAnalysis] = useState<StrategicAnalysis | null>(MOCK_STRATEGIC_ANALYSIS);
+  const [selectedType, setSelectedType] = useState<AnalysisType>('deadline_risk');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="p-4 rounded-full bg-muted mb-4">
-          <Brain className="w-12 h-12 text-muted-foreground" />
+  const analysisTypes: { value: AnalysisType; label: string; description: string }[] = [
+    {
+      value: 'deadline_risk',
+      label: 'Análisis de Riesgo de Plazos',
+      description: 'Evalúa el estado de plazos y fechas críticas',
+    },
+    {
+      value: 'caseload_health',
+      label: 'Salud de Cartera de Casos',
+      description: 'Analiza la distribución y estado de casos activos',
+    },
+    {
+      value: 'profitability_trends',
+      label: 'Tendencias de Rentabilidad',
+      description: 'Identifica patrones en facturación y cobros',
+    },
+  ];
+
+  const handleRunAnalysis = async () => {
+    setIsAnalyzing(true);
+    // Simulate API call - replace with real API call later
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      setAnalysis(MOCK_STRATEGIC_ANALYSIS);
+    }, 2000);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <Brain className="w-8 h-8 text-green-600" />
+            <h1 className="text-4xl font-bold text-gray-900">SmartContext Agent</h1>
+          </div>
+          <p className="text-gray-600">
+            Análisis estratégico inteligente con recomendaciones accionables
+          </p>
         </div>
-        <h2 className="text-xl font-semibold text-foreground mb-2">Próximamente</h2>
-        <p className="text-muted-foreground max-w-md">
-          Smart Context extraerá tareas automáticamente de correos y documentos, priorizándolas inteligentemente.
-        </p>
+
+        {/* Analysis Type Selection */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-green-600" />
+            Seleccionar Tipo de Análisis
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {analysisTypes.map((type) => (
+              <button
+                key={type.value}
+                onClick={() => setSelectedType(type. value)}
+                className={`p-4 rounded-lg border-2 text-left transition-all ${
+                  selectedType === type.value
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-gray-200 hover:border-green-300'
+                }`}
+              >
+                <div className="font-semibold text-gray-900 mb-1">{type.label}</div>
+                <div className="text-sm text-gray-600">{type.description}</div>
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={handleRunAnalysis}
+            disabled={isAnalyzing}
+            className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          >
+            {isAnalyzing ? 'Analizando...' : 'Ejecutar Análisis'}
+          </button>
+        </div>
+
+        {/* Analysis Results */}
+        {analysis && (
+          <div className="space-y-6">
+            {/* Summary Card */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <div className="flex items-start justify-between mb-4">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-green-600" />
+                  Resumen Ejecutivo
+                </h2>
+                <RiskBadge level={analysis.result.risk_level} />
+              </div>
+              <p className="text-gray-700 leading-relaxed mb-4">{analysis.result.summary}</p>
+              <div className="text-sm text-gray-500">
+                Confianza del análisis: {(analysis.result.confidence * 100).toFixed(0)}%
+              </div>
+            </div>
+
+            {/* Metrics Grid */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                Métricas Clave
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {Object.entries(analysis.result.metrics).map(([key, value]) => (
+                  <div key={key} className="bg-green-50 rounded-lg p-4 border-2 border-green-200">
+                    <div className="text-2xl font-bold text-green-600">
+                      {typeof value === 'number' ? value.toFixed(1) : value}
+                      {key.includes('percentage') || key.includes('rate') ? '%' : ''}
+                    </div>
+                    <div className="text-xs text-green-800 mt-1">
+                      {key.replace(/_/g, ' ').toUpperCase()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Key Insights */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Lightbulb className="w-5 h-5 text-green-600" />
+                Insights Clave
+              </h2>
+              <div className="space-y-3">
+                {analysis.result.key_insights.map((insight, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <p className="text-gray-800">{insight}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Action Items */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                Acciones Recomendadas
+              </h2>
+              <div className="space-y-3">
+                {analysis.result.action_items. map((action, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-500">
+                    <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      {idx + 1}
+                    </div>
+                    <p className="text-gray-800">{action}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
