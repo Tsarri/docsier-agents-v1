@@ -287,10 +287,10 @@ export default function SecretariaPage() {
                       
                       {/* Deadline content */}
                       <div className="flex-1">
-                        <h3 className="font-semibold text-base mb-2">{deadline.description}</h3>
-                        <div className="flex items-center gap-3 text-sm flex-wrap">
-                          <span className="font-medium">{deadline.date}</span>
-                          <span className="text-gray-600">
+                        <h3 className="font-semibold text-base text-black mb-2">{deadline.description}</h3>
+                        <div className="flex items-center gap-3 text-sm text-black flex-wrap">
+                          <span className="font-medium text-black">{deadline.date}</span>
+                          <span className="text-black">
                             {deadline.working_days_remaining < 0
                               ? `Vencido hace ${Math.abs(deadline.working_days_remaining)} días`
                               : `${deadline.working_days_remaining} días hábiles`}
@@ -320,12 +320,12 @@ export default function SecretariaPage() {
                       
                       {/* Deadline content with strikethrough */}
                       <div className="flex-1">
-                        <h3 className="font-semibold text-base line-through text-muted-foreground mb-2">
+                        <h3 className="font-semibold text-base line-through text-black mb-2">
                           {deadline.description}
                         </h3>
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
-                          <span>{deadline.date}</span>
-                          <span>Completado</span>
+                        <div className="flex items-center gap-3 text-sm text-black flex-wrap">
+                          <span className="text-black">{deadline.date}</span>
+                          <span className="text-black">Completado</span>
                         </div>
                       </div>
                       
