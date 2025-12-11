@@ -289,8 +289,8 @@ export default function SecretariaPage() {
                       <div className="flex-1">
                         <h3 className="font-semibold text-base text-black mb-2">{deadline.description}</h3>
                         <div className="flex items-center gap-3 text-sm text-black flex-wrap">
-                          <span className="font-medium text-black">{deadline.date}</span>
-                          <span className="text-black">
+                          <span className="font-medium">{deadline.date}</span>
+                          <span>
                             {deadline.working_days_remaining < 0
                               ? `Vencido hace ${Math.abs(deadline.working_days_remaining)} días`
                               : `${deadline.working_days_remaining} días hábiles`}
@@ -324,8 +324,8 @@ export default function SecretariaPage() {
                           {deadline.description}
                         </h3>
                         <div className="flex items-center gap-3 text-sm text-black flex-wrap">
-                          <span className="text-black">{deadline.date}</span>
-                          <span className="text-black">Completado</span>
+                          <span>{deadline.date}</span>
+                          <span>Completado</span>
                         </div>
                       </div>
                       
