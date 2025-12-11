@@ -86,7 +86,7 @@ export default function ArchivistaPage() {
 
         {/* Client Selector */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-black">
             <Users className="w-5 h-5 text-purple-600" />
             Seleccionar Cliente
           </h2>
