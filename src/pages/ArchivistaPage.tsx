@@ -91,9 +91,9 @@ export default function ArchivistaPage() {
             Seleccionar Cliente
           </h2>
           {isLoading ?  (
-            <p className="text-gray-500">Cargando clientes...</p>
+            <p className="text-black">Cargando clientes...</p>
           ) : clients.length === 0 ? (
-            <p className="text-gray-500">
+            <p className="text-black">
               No hay clientes. Ve a la página de Clientes para agregar uno.
             </p>
           ) : (
