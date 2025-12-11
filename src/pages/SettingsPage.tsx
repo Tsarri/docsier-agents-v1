@@ -291,7 +291,7 @@ export default function SettingsPage() {
                   type="text"
                   value={newClientForm.name}
                   onChange={(e) => setNewClientForm({ ...newClientForm, name: e.target.value })}
-                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-black"
                   placeholder="Juan Pérez"
                 />
               </div>
@@ -303,7 +303,7 @@ export default function SettingsPage() {
                   type="email"
                   value={newClientForm.email}
                   onChange={(e) => setNewClientForm({ ...newClientForm, email: e.target. value })}
-                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-black"
                   placeholder="juan@email.com"
                 />
               </div>
@@ -315,7 +315,7 @@ export default function SettingsPage() {
                   type="tel"
                   value={newClientForm. phone}
                   onChange={(e) => setNewClientForm({ ... newClientForm, phone: e. target.value })}
-                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-black"
                   placeholder="+56 9 1234 5678"
                 />
               </div>
@@ -327,14 +327,14 @@ export default function SettingsPage() {
                   type="text"
                   value={newClientForm.company}
                   onChange={(e) => setNewClientForm({ ...newClientForm, company: e.target.value })}
-                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-black"
                   placeholder="TechCorp S.A."
                 />
               </div>
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={() => setShowAddClient(false)}
-                  className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-black"
                 >
                   Cancelar
                 </button>
