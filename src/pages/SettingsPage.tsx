@@ -80,16 +80,13 @@ export default function SettingsPage() {
     try {
       await deleteClientDocument(selectedClient.id, documentId);
       
-      // Remove document from UI immediately
-      setClientDocuments(clientDocuments.filter(doc => doc.id !== documentId));
-      
       // Show success toast
       toast({
         title: "Documento eliminado",
         description: "El documento ha sido eliminado correctamente",
       });
       
-      // Optionally refresh documents list to get updated count
+      // Refresh documents list to get updated count
       await loadClientDocuments(selectedClient.id);
       
     } catch (error) {
@@ -271,6 +268,7 @@ export default function SettingsPage() {
                             size="icon"
                             className="absolute top-2 right-2 h-8 w-8 text-gray-400 hover:text-red-600 hover:bg-red-50"
                             onClick={() => handleDeleteDocument(doc.id)}
+                            aria-label="Eliminar documento"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
