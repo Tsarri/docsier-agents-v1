@@ -89,6 +89,7 @@ export default function SecretariaPage() {
             const validation = await validationRes.json();
             return { ...deadline, validation };
           } catch (error) {
+            console.warn(`Could not fetch validation for deadline ${deadline.id}:`, error);
             return deadline;
           }
         })

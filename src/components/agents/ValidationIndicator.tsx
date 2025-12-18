@@ -31,7 +31,11 @@ export function ValidationIndicator({ validation, compact = false }: ValidationI
     },
   };
   
-  const config = statusConfig[validation.validation_status];
+  // Default to 'warning' if status is not recognized
+  const status = validation.validation_status in statusConfig 
+    ? validation.validation_status 
+    : 'warning';
+  const config = statusConfig[status];
   const Icon = config.icon;
   
   return (
@@ -71,7 +75,7 @@ export function ValidationIndicator({ validation, compact = false }: ValidationI
               <p className="text-xs font-semibold text-gray-700 mb-1">⚠ Discrepancias:</p>
               <ul className="text-xs text-gray-600 space-y-1">
                 {validation.discrepancies.map((disc, i) => (
-                  <li key={i}>• {disc.claim || disc.reality || JSON.stringify(disc)}</li>
+                  <li key={i}>• {disc.claim || disc.reality || disc.field || 'Discrepancia desconocida'}</li>
                 ))}
               </ul>
             </div>
