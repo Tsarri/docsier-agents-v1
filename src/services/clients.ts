@@ -155,7 +155,7 @@ export async function uploadClientDocument(
     const data = await response.json();
     // Backend now returns document_id explicitly (from PR 1)
     if (!data.document_id) {
-      throw new Error('Backend did not return document_id. Ensure backend PR 1 is deployed.');
+      throw new Error('Backend did not return required document_id field in upload response');
     }
     return {
       id: data.document_id,
