@@ -153,10 +153,12 @@ export async function uploadClientDocument(
       throw new Error(`Failed to upload document: ${response.status}`);
     }
     const data = await response.json();
-    // Transform backend response to match frontend ClientDocument interface
-    // Backend returns: { success, filename, client_id, chunks_created, classification, deadlines_extracted, deadlines }
+    // Backend now returns document_id explicitly (from PR 1)
+    if (!data.document_id) {
+      throw new Error('Backend did not return required document_id field in upload response');
+    }
     return {
-      id: data.document_id || `doc-${Date.now()}`,
+      id: data.document_id,
       client_id: clientId,
       filename: data.filename,
       file_type: file.type,
@@ -196,7 +198,9 @@ export async function deleteClientDocument(
       }
     );
     if (!response.ok) {
-      throw new Error(`Failed to delete document: ${response.status}`);
+      const errorData = await response.json().catch(() => null);
+      const errorMessage = errorData?.detail || `HTTP ${response.status}`;
+      throw new Error(`Failed to delete document: ${errorMessage}`);
     }
   } catch (error) {
     console.error('Error deleting document:', error);
@@ -335,7 +339,7 @@ export async function getClientClassifiedDocuments(
     // Transform backend documents to DocumentClassificationResult format
     const documents: BackendDocument[] = data.documents || [];
     return documents.map((doc) => ({
-      document_id: doc.id || doc.document_id,
+      document_id: doc.document_id || doc.id,
       filename: doc.filename,
       classification: doc.classification || DEFAULT_CLASSIFICATION,
       created_at: doc.created_at,
