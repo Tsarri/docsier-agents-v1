@@ -146,16 +146,25 @@ export async function getClientDocuments(clientId: string): Promise<ClientDocume
     // Frontend needs 'id' to be the document_id (filename) for deletion to work
     const backendDocs: BackendDocument[] = data.documents || [];
     
-    return backendDocs.map((doc) => ({
-      id: doc.document_id || doc.id || '',  // Use document_id (filename) as primary ID for deletion
-      client_id: doc.client_id || clientId,
-      filename: doc.filename || doc.document_id || '',
-      file_type: doc.doc_type || 'unknown',
-      file_size: 0,  // Not provided by backend
-      uploaded_at: doc.created_at || new Date().toISOString(),
-      processed: true,
-      processing_status: 'completed' as const,
-    }));
+    return backendDocs.map((doc) => {
+      // Backend should always provide document_id (filename)
+      // If neither exists, this is a backend data issue
+      const documentId = doc.document_id || doc.id;
+      if (!documentId) {
+        console.error('Backend document missing both document_id and id:', doc);
+      }
+      
+      return {
+        id: documentId || `unknown-${Date.now()}`,  // Use document_id (filename) as primary ID for deletion
+        client_id: doc.client_id || clientId,
+        filename: doc.filename || doc.document_id || 'unknown-file',
+        file_type: doc.doc_type || 'unknown',
+        file_size: 0,  // Not provided by backend
+        uploaded_at: doc.created_at || new Date().toISOString(),
+        processed: true,
+        processing_status: 'completed' as const,
+      };
+    });
   } catch (error) {
     console.error('Error fetching client documents:', error);
     throw error;
