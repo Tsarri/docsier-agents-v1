@@ -1,20 +1,30 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Calendar, FileText, Brain, Home, Settings } from 'lucide-react';
+import { Calendar, FileText, Brain, Home, Settings, LogOut } from 'lucide-react';
 import SecretariaPage from './pages/SecretariaPage';
 import ArchivistaPage from './pages/ArchivistaPage';
 import SmartContextPage from './pages/SmartContextPage';
 import SettingsPage from './pages/SettingsPage';
 import { Toaster } from '@/components/ui/toaster';
+import { Toaster as Sonner } from 'sonner';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 function HomePage() {
+  const { user } = useAuth();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">Docsier AI Agents</h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 mb-2">
             Sistema integrado de agentes inteligentes para gestión legal
           </p>
+          {user && (
+            <p className="text-lg text-indigo-600 font-semibold">
+              Bienvenido, {user.name}!
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -70,64 +80,116 @@ function HomePage() {
   );
 }
 
+function Navigation() {
+  const { user, logout } = useAuth();
+
+  if (!user) return null;
+
+  return (
+    <nav className="bg-white shadow-md">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <Home className="w-6 h-6" />
+            Docsier AI
+          </Link>
+          <div className="flex gap-4 items-center">
+            <Link
+              to="/secretaria"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-indigo-50 text-gray-700 hover:text-indigo-600 transition-colors"
+            >
+              <Calendar className="w-5 h-5" />
+              Secretaria
+            </Link>
+            <Link
+              to="/archivista"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-600 transition-colors"
+            >
+              <FileText className="w-5 h-5" />
+              Archivista
+            </Link>
+            <Link
+              to="/smartcontext"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
+            >
+              <Brain className="w-5 h-5" />
+              SmartContext
+            </Link>
+            <Link
+              to="/settings"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-colors"
+            >
+              <Settings className="w-5 h-5" />
+              Clientes
+            </Link>
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              Salir
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 function App() {
   return (
     <Router>
-      <div className="min-h-screen">
-        {/* Navigation Bar */}
-        <nav className="bg-white shadow-md">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-2 text-xl font-bold text-gray-900">
-                <Home className="w-6 h-6" />
-                Docsier AI
-              </Link>
-              <div className="flex gap-4">
-                <Link
-                  to="/secretaria"
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-indigo-50 text-gray-700 hover:text-indigo-600 transition-colors"
-                >
-                  <Calendar className="w-5 h-5" />
-                  Secretaria
-                </Link>
-                <Link
-                  to="/archivista"
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-600 transition-colors"
-                >
-                  <FileText className="w-5 h-5" />
-                  Archivista
-                </Link>
-                <Link
-                  to="/smartcontext"
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
-                >
-                  <Brain className="w-5 h-5" />
-                  SmartContext
-                </Link>
-                <Link
-                  to="/settings"
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-colors"
-                >
-                  <Settings className="w-5 h-5" />
-                  Clientes
-                </Link>
-              </div>
-            </div>
-          </div>
-        </nav>
+      <AuthProvider>
+        <div className="min-h-screen">
+          <Navigation />
 
-        {/* Routes */}
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/secretaria" element={<SecretariaPage />} />
-          <Route path="/archivista" element={<ArchivistaPage />} />
-          <Route path="/smartcontext" element={<SmartContextPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-        </Routes>
-        
-        {/* Toast notifications */}
-        <Toaster />
-      </div>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/secretaria"
+              element={
+                <ProtectedRoute>
+                  <SecretariaPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/archivista"
+              element={
+                <ProtectedRoute>
+                  <ArchivistaPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/smartcontext"
+              element={
+                <ProtectedRoute>
+                  <SmartContextPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+
+          <Toaster />
+          <Sonner />
+        </div>
+      </AuthProvider>
     </Router>
   );
 }
